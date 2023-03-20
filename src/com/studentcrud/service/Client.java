@@ -6,12 +6,14 @@ import com.studentcrud.view.AdminViewer;
 import com.studentcrud.view.StudentViewer;
 import com.studentcrud.view.TeacherViewer;
 
+import java.util.List;
+
 public class Client {
     AdminViewer av = new AdminViewer();
     StudentViewer sv = new StudentViewer();
     TeacherViewer tv = new TeacherViewer();
-    UserManager<Student> studentManager = new UserManager<>();
-    UserManager<Teacher> teacherManager = new UserManager<>();
+    StudentManager studentManager = new StudentManagerImpl();
+    TeacherManager teacherManager = new TeacherManagerImpl();
     public void run() {// 학생으로 로그인할지 관리자로 로그인할지 고를 수 있는 초기 페이지.
         String id;
         String pw;
@@ -20,7 +22,7 @@ public class Client {
                 id = sv.inputId();
                 pw = sv.inputPw();
 
-                if (studentManager.findUserByIdAndPassword(id, pw)) { //로그인 성공
+                if (studentManager.findStudentByIdAndPassword(id, pw)) { //로그인 성공
                     studentMainPage(studentManager.findById(id));
                     break;
                 } else { //로그인 실패
@@ -32,7 +34,7 @@ public class Client {
                 id = tv.inputId();
                 pw = tv.inputPw();
 
-                if(teacherManager.findUserByIdAndPassword(id, pw)) {
+                if(teacherManager.findTeacherByIdAndPassword(id, pw)) {
                     teacherMainPage(teacherManager.findById(id));
                     break;
                 }else {
@@ -60,7 +62,7 @@ public class Client {
                 case 1: //학생 입력
                     while (true) {
                         try {
-                            studentManager.addUser(av.typeStudent());
+                            studentManager.addStudent(av.typeStudent());
                             av.printSuccessSignUp(); //회원가입 성공 메세지
                             break;
                         } catch (IllegalArgumentException ignored) {
@@ -78,12 +80,12 @@ public class Client {
 
                     break;
                 case 4: // 학생 삭제
-                    studentManager.deleteUserById(sv.inputId());
+                    studentManager.deleteStudentById(sv.inputId());
                     break;
                 case 5: //교직원 추가
                     while(true) {
                         try{
-                        teacherManager.addUser(av.typeTeacher());
+                        teacherManager.addTeacher(av.typeTeacher());
                         av.printSuccessSignUp(); //회원가입 성공 메세지
                         break;
                         } catch (IllegalArgumentException ignored) {
@@ -97,7 +99,7 @@ public class Client {
                     }
                     break;
                 case 7: //교직원 삭제
-                    teacherManager.deleteUserById(tv.inputId());
+                    teacherManager.deleteTeacherById(tv.inputId());
                     break;
                 case 8: // 로그아웃
                     run(); //break 안 달은 이유 : 로그아웃할 때 현재 창이 종료가 되면서 새로운 창으로 넘어가는 느낌이라서
@@ -119,10 +121,10 @@ public class Client {
                 case 2:
                     switch (sv.replaceStudentInformation()) {
                         case 1: //이름 변경
-                            studentManager.replaceUserName(student.getName(), sv.replaceStudentName());
+                            studentManager.replaceStudentName(student.getName(), sv.replaceStudentName());
                             break;
                         case 2: //비밀번호 변경
-                            studentManager.replaceUserPassword(student.getName(), sv.replaceStudentPassword());
+                            studentManager.replaceStudentPassword(student.getName(), sv.replaceStudentPassword());
                             break;
                         case 3: //취소
                             studentMainPage(student);
@@ -169,10 +171,10 @@ public class Client {
                 case 4: // 본인의 이름 및 비번 수정
                     switch(tv.replaceTeacherInformation()) {
                         case 1:
-                            teacherManager.replaceUserName(teacher.getName(), tv.replaceTeacherName());
+                            teacherManager.replaceTeacherName(teacher.getName(), tv.replaceTeacherName());
                             break;
                         case 2:
-                            teacherManager.replaceUserPassword(teacher.getName(), tv.replaceTeacherPassword());
+                            teacherManager.replaceTeacherPassword(teacher.getName(), tv.replaceTeacherPassword());
                             break;
                         case 3:
                             teacherMainPage(teacher);
