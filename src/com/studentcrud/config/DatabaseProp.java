@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class DatabaseProp {
+public class DatabaseProp { //리소스 파일 읽어오는거
     private String url;
     private String userName;
     private String password;
@@ -14,6 +14,7 @@ public class DatabaseProp {
 
     public static DatabaseProp getInstance() {
         if (databaseProp == null) databaseProp = new DatabaseProp();
+
         return databaseProp;
     }
 

@@ -1,6 +1,5 @@
 package com.studentcrud.service;
 
-import com.studentcrud.user.Student;
 import com.studentcrud.user.Teacher;
 import com.studentcrud.user.User;
 
