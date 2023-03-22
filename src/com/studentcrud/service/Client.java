@@ -12,8 +12,8 @@ public class Client {
     AdminViewer av = new AdminViewer();
     StudentViewer sv = new StudentViewer();
     TeacherViewer tv = new TeacherViewer();
-    StudentManager studentManager = new StudentManagerImpl();
-    TeacherManager teacherManager = new TeacherManagerImpl();
+    StudentManager studentManager = new StudentManagerDBImpl();
+    TeacherManager teacherManager = new TeacherManagerDBImpl();
     public void run() {// 학생으로 로그인할지 관리자로 로그인할지 고를 수 있는 초기 페이지.
         String id;
         String pw;
@@ -77,7 +77,6 @@ public class Client {
                     for(Student std : studentManager.findAll()) {
                     av.printStudent(std);;
                     }
-
                     break;
                 case 4: // 학생 삭제
                     studentManager.deleteStudentById(sv.inputId());

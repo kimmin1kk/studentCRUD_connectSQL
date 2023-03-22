@@ -9,7 +9,6 @@ import com.studentcrud.user.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 //Teacher DAO
 public class TeacherManagerDBImpl implements TeacherManager{
     private final DatabaseProp databaseProp = DatabaseProp.getInstance();
@@ -42,7 +41,7 @@ public class TeacherManagerDBImpl implements TeacherManager{
     @Override
     public void addTeacher(Teacher teacher) throws IllegalArgumentException {
         try {
-            String sql = "insert into teacher(seq, id, pw, name, subject) " +
+            String sql = "insert into teacher(teacher.seq, id, pw, teacher.name, subject) " +
                     "values (?, ?, ?, ?, ?)";
             pstmt.setInt(1, teacher.getSeq());
             pstmt.setString(2, teacher.getId());

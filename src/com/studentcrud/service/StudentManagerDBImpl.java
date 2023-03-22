@@ -6,7 +6,6 @@ import com.studentcrud.user.Student;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 //Student DAO
 public class StudentManagerDBImpl implements StudentManager {
@@ -20,12 +19,10 @@ public class StudentManagerDBImpl implements StudentManager {
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from student where id = ? and pw = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, pw); // 맵핑
-            pstmt = conn.prepareStatement(sql); // 맵핑 완료
-
             rs = pstmt.executeQuery(); //실행
-
             if (rs.next()) {
                 return true;
             }
@@ -38,18 +35,21 @@ public class StudentManagerDBImpl implements StudentManager {
     }
 
     @Override
-    public void addStudent(Student student) throws IllegalArgumentException {
+    public void addStudent(Student student) throws IllegalArgumentException { // Done
         try {
-            String sql = "insert into student(seq, id, pw, name, k_score, e_score, m_score) " +
-                    "values (?, ?, ?, ?, ?, ?, ?)";
-            pstmt.setInt(1, student.getSeq());
-            pstmt.setString(2, student.getId());
-            pstmt.setString(3, student.getPw());
-            pstmt.setString(4, student.getName());
-            pstmt.setInt(5, student.getkScore());
-            pstmt.setInt(6, student.geteScore());
-            pstmt.setInt(7, student.getmScore()); //맵핑
-            pstmt = conn.prepareStatement(sql); //맵핑 완료
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "insert into student(id, pw, student.name, k_score, e_score, m_score) " +
+                    "values (?, ?, ?, ?, ?, ?)";
+
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, student.getId());
+            pstmt.setString(2, student.getPw());
+            pstmt.setString(3, student.getName());
+            pstmt.setInt(4, student.getkScore());
+            pstmt.setInt(5, student.geteScore());
+            pstmt.setInt(6, student.getmScore()); //맵핑
+
 
             int res = pstmt.executeUpdate(); //실행
             if(res > 0) {
@@ -69,28 +69,25 @@ public class StudentManagerDBImpl implements StudentManager {
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from student where id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery(sql);
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            closeConnection();
-        }
-        try {
+            rs = pstmt.executeQuery();
             if (rs.next()) { //rs 존재하면 반환
                 return getStudentByResultSet(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
         return null;
     }
 
     @Override
-    public List<Student> findAll() {
+    public List<Student> findAll() { // Done
         List<Student> students = new ArrayList<>();
         try {
-            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword()); //DB 연결
             String sql = "select * from student";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -116,52 +113,63 @@ public class StudentManagerDBImpl implements StudentManager {
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from student where id = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery(sql);
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            closeConnection();
-        }
-        try {
-            if (rs.next()) { //rs 존재하면 반환
-                String sql = "delete from student where id = ?";
+            rs = pstmt.executeQuery();
+            if (rs.next()) { // rs가 존재하면 삭제
+                sql = "delete from student where id = ?";
+                pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, id);
-                rs = pstmt.executeQuery(sql);
+                pstmt.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
-//
-//        int cnt = 0;
-//        for (Student student : userList) {
-//            if (id.equals(student.getId())) {
-//                userList.remove(cnt);
-//                break;
-//            }
-//            cnt++;
-//        }
+    @Override
+    public void replaceStudentName(String beforeName, String afterName) {
+        try {
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "UPDATE student SET name = ? WHERE name = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, afterName);
+            pstmt.setString(2, beforeName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+//    public void replaceStudentName(String beforeName, String afterName) {
+//        findById(beforeName).setName(afterName);
 //    }
 
     @Override
-    public void replaceStudentName(String beforeName, String afterName) {
-        findById(beforeName).setName(afterName);
-    }
-
-    @Override
     public void replaceStudentPassword(String name, String afterPassword) {
-        findById(name).setPw(afterPassword);
+        try {
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "UPDATE student SET pw = ? WHERE pw = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, afterPassword);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
     }
 // ---------------------------------------------
     private Student getStudentByResultSet(ResultSet resultSet) throws SQLException {
         Student student = new Student();
-        student.setId((resultSet.getString("id")));
-        student.setPw((resultSet.getString("pw")));
         student.setName(resultSet.getString("name"));
+        student.setId(resultSet.getString("id"));
         student.setkScore(resultSet.getInt("k_score"));
-        student.setkScore(resultSet.getInt("e_score"));
-        student.setkScore(resultSet.getInt("m_score"));
+        student.seteScore(resultSet.getInt("e_score"));
+        student.setmScore(resultSet.getInt("m_score"));
         return student;
     }
 
