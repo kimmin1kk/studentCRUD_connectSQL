@@ -38,4 +38,5 @@ public class Student extends User{ //오직 데이터만을 담고있다.
     public void setmScore(int mScore) {
         this.mScore = mScore;
     }
+
 }

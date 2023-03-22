@@ -21,12 +21,10 @@ public class TeacherManagerDBImpl implements TeacherManager{
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from teacher where id = ? and pw = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, pw); // 맵핑
-            pstmt = conn.prepareStatement(sql); // 맵핑 완료
-
             rs = pstmt.executeQuery(); //실행
-
             if (rs.next()) {
                 return true;
             }
@@ -41,15 +39,16 @@ public class TeacherManagerDBImpl implements TeacherManager{
     @Override
     public void addTeacher(Teacher teacher) throws IllegalArgumentException {
         try {
-            String sql = "insert into teacher(teacher.seq, id, pw, teacher.name, subject) " +
-                    "values (?, ?, ?, ?, ?)";
-            pstmt.setInt(1, teacher.getSeq());
-            pstmt.setString(2, teacher.getId());
-            pstmt.setString(3, teacher.getPw());
-            pstmt.setString(4, teacher.getName());
-            pstmt.setString(5, String.valueOf(teacher.getSubject())); //맵핑
-            pstmt = conn.prepareStatement(sql); //맵핑 완료
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "insert into teacher(id, pw, name, subject) " +
+                    "values (?, ?, ?, ?)";
 
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, teacher.getId());
+            pstmt.setString(2, teacher.getPw());
+            pstmt.setString(3, teacher.getName()); //맵핑
+            pstmt.setString(4, teacher.getSubject().toString());
             int res = pstmt.executeUpdate(); //실행
             if(res > 0) {
                 System.out.println("입력 성공");
@@ -68,19 +67,16 @@ public class TeacherManagerDBImpl implements TeacherManager{
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from teacher where id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery(sql);
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            closeConnection();
-        }
-        try {
+            rs = pstmt.executeQuery();
             if (rs.next()) { //rs 존재하면 반환
                 return getTeacherByResultSet(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
         return null;
     }
@@ -89,7 +85,7 @@ public class TeacherManagerDBImpl implements TeacherManager{
     public List<Teacher> findAll() {
         List<Teacher> teachers = new ArrayList<>();
         try {
-            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword()); //DB 연결
             String sql = "select * from teacher";
             pstmt = conn.prepareStatement(sql);
             rs = pstmt.executeQuery();
@@ -114,32 +110,53 @@ public class TeacherManagerDBImpl implements TeacherManager{
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "select * from teacher where id = ?";
+            pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
-            rs = pstmt.executeQuery(sql);
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            closeConnection();
-        }
-        try {
-            if (rs.next()) { //rs 존재하면 반환
-                String sql = "delete from teacher where id = ?";
+            rs = pstmt.executeQuery();
+            if (rs.next()) { // rs가 존재하면 삭제
+                sql = "delete from teacher where id = ?";
+                pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, id);
-                rs = pstmt.executeQuery(sql);
+                pstmt.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 
     @Override
     public void replaceTeacherName(String beforeName, String afterName) {
-        findById(beforeName).setName(afterName);
+        try {
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "UPDATE teacher SET name = ? WHERE name = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, afterName);
+            pstmt.setString(2, beforeName);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
     }
 
     @Override
-    public void replaceTeacherPassword(String name, String afterPassword) {
-        findById(name).setPw(afterPassword);
+    public void replaceTeacherPassword(String beforePassword, String afterPassword) {
+
+        try {
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "UPDATE teacher SET pw = ? WHERE pw = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, afterPassword);
+            pstmt.setString(2, beforePassword);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
     }
 
     //--------------------------

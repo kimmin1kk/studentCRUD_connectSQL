@@ -6,14 +6,6 @@ public class User {
     protected String pw;
     protected String name;
 
-    public int getSeq() {
-        return seq;
-    }
-
-    public void setSeq(int seq) {
-        this.seq = seq;
-    }
-
     public void setId(String id) {
         this.id = id;
     }

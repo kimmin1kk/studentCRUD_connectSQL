@@ -143,18 +143,15 @@ public class StudentManagerDBImpl implements StudentManager {
             closeConnection();
         }
     }
-//    public void replaceStudentName(String beforeName, String afterName) {
-//        findById(beforeName).setName(afterName);
-//    }
 
     @Override
-    public void replaceStudentPassword(String name, String afterPassword) {
+    public void replaceStudentPassword(String beforePassword, String afterPassword) {
         try {
             conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
             String sql = "UPDATE student SET pw = ? WHERE pw = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, name);
-            pstmt.setString(2, afterPassword);
+            pstmt.setString(1, afterPassword);
+            pstmt.setString(2, beforePassword);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -170,6 +167,7 @@ public class StudentManagerDBImpl implements StudentManager {
         student.setkScore(resultSet.getInt("k_score"));
         student.seteScore(resultSet.getInt("e_score"));
         student.setmScore(resultSet.getInt("m_score"));
+        student.setPw(resultSet.getString("pw"));
         return student;
     }
 

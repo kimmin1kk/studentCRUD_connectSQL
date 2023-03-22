@@ -2,6 +2,7 @@ package com.studentcrud.service;
 
 import com.studentcrud.user.Student;
 import com.studentcrud.user.Teacher;
+import com.studentcrud.user.User;
 import com.studentcrud.view.AdminViewer;
 import com.studentcrud.view.StudentViewer;
 import com.studentcrud.view.TeacherViewer;
@@ -123,7 +124,7 @@ public class Client {
                             studentManager.replaceStudentName(student.getName(), sv.replaceStudentName());
                             break;
                         case 2: //비밀번호 변경
-                            studentManager.replaceStudentPassword(student.getName(), sv.replaceStudentPassword());
+                            studentManager.replaceStudentPassword(student.getPw(), sv.replaceStudentPassword());
                             break;
                         case 3: //취소
                             studentMainPage(student);
@@ -173,7 +174,7 @@ public class Client {
                             teacherManager.replaceTeacherName(teacher.getName(), tv.replaceTeacherName());
                             break;
                         case 2:
-                            teacherManager.replaceTeacherPassword(teacher.getName(), tv.replaceTeacherPassword());
+                            teacherManager.replaceTeacherPassword(teacher.getPw(), tv.replaceTeacherPassword());
                             break;
                         case 3:
                             teacherMainPage(teacher);
