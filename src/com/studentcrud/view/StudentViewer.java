@@ -7,10 +7,6 @@ import java.util.Scanner;
 import static com.studentcrud.config.Configuration.*;
 
 public class StudentViewer extends UserViewer {
-//    @Override
-//    protected void checkInstanceValidation(User user) {
-//        if (!(user instanceof Student)) throw new IllegalArgumentException();
-//    }
 
     public String inputId() { // 아이디를 입력하는 메서드
         int id = 0;

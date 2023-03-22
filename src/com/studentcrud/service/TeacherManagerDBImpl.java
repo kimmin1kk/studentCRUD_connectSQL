@@ -1,10 +1,8 @@
 package com.studentcrud.service;
 
 import com.studentcrud.config.DatabaseProp;
-import com.studentcrud.user.Student;
 import com.studentcrud.user.Subject;
 import com.studentcrud.user.Teacher;
-import com.studentcrud.user.User;
 
 import java.sql.*;
 import java.util.ArrayList;

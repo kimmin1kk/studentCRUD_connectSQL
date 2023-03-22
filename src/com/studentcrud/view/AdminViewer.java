@@ -10,10 +10,6 @@ import java.util.Scanner;
 import static com.studentcrud.config.Configuration.*;
 
 public class AdminViewer extends UserViewer {
-//    @Override
-//    protected void checkInstanceValidation(User user) {
-//        if (!(user instanceof Student)) throw new IllegalArgumentException();
-//    }
 
     public int loginPage() { // 처음 화면을 켰을 때 ui 메서드
 
