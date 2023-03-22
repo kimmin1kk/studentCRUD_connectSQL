@@ -159,7 +159,26 @@ public class StudentManagerDBImpl implements StudentManager {
             closeConnection();
         }
     }
-// ---------------------------------------------
+
+    @Override
+    public void updateStudent(Student student) {
+        try {
+            conn = DriverManager.getConnection(databaseProp.getUrl(), databaseProp.getUserName(), databaseProp.getPassword());
+            String sql = "UPDATE student SET k_score =?, e_score=?, m_score=? WHERE id = ?";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, student.getkScore());
+            pstmt.setInt(2, student.geteScore());
+            pstmt.setInt(3, student.getmScore());
+            pstmt.setString(4, student.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+    }
+
+    // ---------------------------------------------
     private Student getStudentByResultSet(ResultSet resultSet) throws SQLException {
         Student student = new Student();
         student.setName(resultSet.getString("name"));

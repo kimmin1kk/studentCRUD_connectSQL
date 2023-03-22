@@ -23,4 +23,6 @@ public interface StudentManager {
     void replaceStudentName(String beforeName, String afterName);
 
     void replaceStudentPassword(String name, String afterPassword);
+
+    void updateStudent(Student student);
 }

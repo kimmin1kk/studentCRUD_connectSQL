@@ -153,18 +153,22 @@ public class Client {
                     }
                     break;
                 case 3: // 담당과목 학생 점수 수정
+                    Student student = studentManager.findById(sv.inputId());
                     switch(teacher.getSubject()) {
                         case KOREAN: //국어 점수만 수정
                             tv.messageEditKoreanScore();
-                            studentManager.findById(sv.inputId()).setkScore(tv.editStudentKoreanScore());
+                            student.setkScore(tv.editStudentKoreanScore());
+                            studentManager.updateStudent(student);
                             break;
                         case ENGLISH: //영어 점수만 수정
                             tv.messageEditEnglishScore();
-                            studentManager.findById(sv.inputId()).seteScore(tv.editStudentEnglishScore());
+                            student.seteScore((tv.editStudentEnglishScore()));
+                            studentManager.updateStudent(student);
                             break;
                         case MATH: //수학 점수만 수정
                             tv.messageEditMathScore();
-                            studentManager.findById(sv.inputId()).setmScore(tv.editStudentMathScore());
+                            student.setmScore((tv.editStudentMathScore()));
+                            studentManager.updateStudent(student);
                             break;
                     }
                     break;
